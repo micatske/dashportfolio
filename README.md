@@ -1,7 +1,7 @@
 # Tech-Stocks-Dashboard
 Dashboard with stock price analysis.
 
-#### See the dashboard in action: https://youtu.be/eb-ccqK6bcg
+#### See the dashboard in action: ![til](example.gif)
 
 This is an interactive dashboard  where users can pick the date range.
 
