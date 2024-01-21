@@ -54,30 +54,22 @@ index_page = html.Div([
     ),
     dcc.Graph(id='portfolio-value-graph'),
     html.Br(),
-    dcc.Link('Go to Stock Price Page', href='/stock-price')
-])
-
-
-# Portfolio Performance Page Layout
-   
-portfolio_page=html.Div([
-    html.H1('Portfolio Value Over Time'),
-    html.Label('Select Date Range:'),
-    dcc.DatePickerRange(
-        id='portfolio-date-picker-range',
-        start_date=dt.now() - pd.Timedelta(days=365),
-        end_date=dt.now(),
-        display_format='YYYY-MM-DD'
-    ),
-    dcc.Graph(id='portfolio-value-graph'),#figure=create_portfolio_graph(DEFAULT_TICKERS)),
+    # Metrics Table Div
+        html.Div([
+            html.Table([
+                html.Tr([html.Th('Metric'), html.Th('Value')]),
+                html.Tr([html.Td('Total Return'), html.Td(id='total-return-metric')]),
+                html.Tr([html.Td('Annualized Return'), html.Td(id='annualized-return-metric')]),
+                html.Tr([html.Td('Sharpe Ratio'), html.Td(id='sharpe-ratio-metric')]),
+            ])
+        ], className='metrics-container'),
     html.Br(),
-    dcc.Link('Go back to Home', href='/')
+    dcc.Link('Go to Stock Price Page', href='/stock-price'),
 ])
 
-#
 
 
-    # Fetch portfolio time series data
+# Fetch portfolio time series data
 stock_page=html.Div([
     html.H1('Stock Prices Over Time'),
 

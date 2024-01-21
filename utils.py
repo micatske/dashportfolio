@@ -1,30 +1,24 @@
-import yfinance as yf
-import plotly.graph_objs as go
-
-def fetch_stock_data(ticker, start_date, end_date):
-    data = yf.download(ticker, start=start_date, end=end_date)
-    return data
-
-
-def create_stock_figure(data):
-    fig = go.Figure(data=[go.Scatter(x=data.index, y=data['Close'])])
-    fig.update_layout(title='Stock Price Over Time')
-    return fig
-
-def create_empty_figure():
-    # Create an empty or default Plotly figure
-    return go.Figure()
-
-
-def calculate_portfolio_performance(portfolio):
-    # Calculate portfolio performance using market cap weights
-    # ...
-    return performance_data
-
-def create_portfolio_figure(data):
-    # Create Plotly figure for portfolio data
-    return go.Figure(...)
-
-def create_stock_figure(data):
-    # Create Plotly figure for individual stock data
-    return go.Figure(...)
+import pandas as pd
+import numpy as np
+def calculate_portfolio_metrics(df_pv):
+    df=pd.DataFrame(df_pv, columns=['Portfolio Value']).reset_index()
+    # Calculate total return
+    total_return = (df['Portfolio Value'].iloc[-1] - df['Portfolio Value'].iloc[0]) / df['Portfolio Value'].iloc[0]
+    
+    # Calculate annualized return
+    annualized_return = ((1 + total_return) ** (365 / len(df.index)) - 1)
+    
+    # Calculate risk-adjusted return (e.g., Sharpe ratio)
+    risk_free_rate = 0.03  # Replace with the appropriate risk-free rate
+    excess_return = df['Portfolio Value'].pct_change() - risk_free_rate / 365
+    sharpe_ratio = (excess_return.mean() / excess_return.std()) * np.sqrt(365)
+    
+    # Create a dictionary to store the metrics
+    metrics = {
+        'Total Return': round(total_return,4),
+        'Annualized Return': round(annualized_return,4),
+        'Sharpe Ratio': round(sharpe_ratio,4),
+        # Add more metrics as needed
+    }
+    
+    return metrics

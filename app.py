@@ -1,5 +1,6 @@
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output,State
+from sklearn import metrics
 import layouts
 import time
 import dash
@@ -8,9 +9,34 @@ from dash.exceptions import PreventUpdate
 import pandas as pd
 from datetime import datetime as dt
 import plotly.graph_objs as go
+from utils import calculate_portfolio_metrics
+
+
+
+app = Dash(__name__,suppress_callback_exceptions=True)
+app.title = 'Tech Stocks Dashboard'
+
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
+])
+
+@app.callback(Output('page-content', 'children'),
+              [Input('url', 'pathname')])
+def display_page(pathname):
+    if pathname in [None, '/', '/portfolio-table']:
+        return layouts.index_page
+    elif pathname == '/stock-price':
+        return layouts.stock_page
+    else:
+        # This can be a 404 page or redirect to home
+        return '404 - Page not found'
+
+
+
 
 global DEFAULT_TICKERS
-DEFAULT_TICKERS = ['AAPL', 'SSNLF','MSFT', 'GOOGL', 'AMZN', 'META', 'TCEHY', 'TSLA', 'BABA', 'NVDA']
+DEFAULT_TICKERS = ['AAPL', 'NFLX','MSFT', 'GOOGL', 'AMZN', 'META', 'TCEHY', 'TSLA', 'BABA', 'NVDA']
 default_start_date = dt.now() - pd.Timedelta(days=365)
 default_end_date =dt.now()
 
@@ -32,35 +58,21 @@ def fetch_data():
 
     # Assume a portfolio value of $10,000
     portfolio_value = 10000
-    info_df['Investment'] = info_df['Weight'] * portfolio_value
+    info_df['Investment'] = round(info_df['Weight'] * portfolio_value,2)
     return info_df
 
 
 
 
-app = Dash(__name__,suppress_callback_exceptions=True)
-app.title = 'Tech Stocks Dashboard'
 
-app.layout = html.Div([
-    dcc.Location(id='url', refresh=False),
-    html.Div(id='page-content')
-])
-
-@app.callback(Output('page-content', 'children'),
-              [Input('url', 'pathname')])
-def display_page(pathname):
-    if pathname in [None, '/', '/portfolio-table']:
-        return layouts.index_page
-    elif pathname == '/portfolio-performance':
-        return layouts.portfolio_page
-    elif pathname == '/stock-price':
-        return layouts.stock_page
-    else:
-        # This can be a 404 page or redirect to home
-        return '404 - Page not found'
 
 @app.callback(
+     [Output('portfolio-table', 'data'),
      Output('portfolio-value-graph', 'figure'),
+     Output('total-return-metric', 'children'),
+     Output('annualized-return-metric', 'children'),
+     Output('sharpe-ratio-metric', 'children')
+     ],
     [Input('portfolio-date-picker-range', 'start_date'),
      Input('portfolio-date-picker-range', 'end_date')])
 def update_portfolio_and_graph(start_date, end_date):
@@ -96,7 +108,7 @@ def update_portfolio_and_graph(start_date, end_date):
 
     # Assume a portfolio value of $10,000
     portfolio_value = 10000
-    info_df['Investment'] = info_df['Weight'] * portfolio_value
+    info_df['Investment'] = round(info_df['Weight'] * portfolio_value,2)
     # Update portfolio table data
     updated_table_data = info_df.to_dict('records')
 
@@ -119,14 +131,18 @@ def update_portfolio_and_graph(start_date, end_date):
     # Apply the portfolio weights to the historical data
     # Assuming market_cap_df has a 'Weight' column
     weights = info_df.set_index('Ticker')['Weight'].reindex(historical_data.columns).fillna(0)
-    weighted_data = historical_data.multiply(weights, axis='columns')
-    portfolio_value = weighted_data.sum(axis=1)
+    asset_quantity=round(weights*portfolio_value/100/historical_data.iloc[0]) 
+    weighted_data = historical_data.multiply(asset_quantity, axis='columns')
+    df_pv = weighted_data.sum(axis=1)
 
     # Create the graph
-    updated_graph = go.Figure(data=[go.Scatter(x=portfolio_value.index, y=portfolio_value, mode='lines')],
+    updated_graph = go.Figure(data=[go.Scatter(x=df_pv.index, y=df_pv, mode='lines')],
                                 layout={'title': 'Portfolio Value Over Time'})
 
-    return updated_graph
+    # Calculate portfolio metrics
+    metrics = calculate_portfolio_metrics(df_pv)
+    
+    return updated_table_data,updated_graph,metrics['Total Return'], metrics['Annualized Return'], metrics['Sharpe Ratio']
 
 
 @app.callback(
