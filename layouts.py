@@ -43,8 +43,16 @@ index_page = html.Div([
         id='portfolio-table',
         columns=[{"name": i, "id": i} for i in info_df.columns],
         data=info_df.to_dict('records')
-    ),
+    ), 
     html.Br(),
+    dcc.Link('Go to Portfolio Page', href='/portfolio-page'),   
+    html.Br(),
+    dcc.Link('Go to Stock Price Page', href='/stock-price'),
+    
+])
+
+#Portfolio Time Series Layout
+portfolio_page=html.Div([
     html.Label('Select Date Range:'),
     dcc.DatePickerRange(
         id='portfolio-date-picker-range',
@@ -63,8 +71,10 @@ index_page = html.Div([
                 html.Tr([html.Td('Sharpe Ratio'), html.Td(id='sharpe-ratio-metric')]),
             ])
         ], className='metrics-container'),
-    html.Br(),
-    dcc.Link('Go to Stock Price Page', href='/stock-price'),
+        html.Br(),
+        dcc.Link('Go to Stock Price Page', href='/stock-price'),
+        html.Br(),
+        dcc.Link('Go to Home Page', href='/')
 ])
 
 

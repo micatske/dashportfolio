@@ -1,3 +1,4 @@
+from os import path
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output,State
 from sklearn import metrics
@@ -28,6 +29,8 @@ def display_page(pathname):
         return layouts.index_page
     elif pathname == '/stock-price':
         return layouts.stock_page
+    elif pathname == '/portfolio-page':
+        return layouts.portfolio_page
     else:
         # This can be a 404 page or redirect to home
         return '404 - Page not found'
@@ -67,7 +70,7 @@ def fetch_data():
 
 
 @app.callback(
-     [Output('portfolio-table', 'data'),
+     [#Output('portfolio-table', 'data'),
      Output('portfolio-value-graph', 'figure'),
      Output('total-return-metric', 'children'),
      Output('annualized-return-metric', 'children'),
@@ -142,7 +145,8 @@ def update_portfolio_and_graph(start_date, end_date):
     # Calculate portfolio metrics
     metrics = calculate_portfolio_metrics(df_pv)
     
-    return updated_table_data,updated_graph,metrics['Total Return'], metrics['Annualized Return'], metrics['Sharpe Ratio']
+    #return #updated_table_data,
+    return updated_graph,metrics['Total Return'], metrics['Annualized Return'], metrics['Sharpe Ratio']
 
 
 @app.callback(
