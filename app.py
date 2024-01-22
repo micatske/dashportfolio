@@ -122,7 +122,7 @@ def update_portfolio_and_graph(start_date, end_date):
     else:
         start_date = pd.to_datetime(start_date)
         end_date = pd.to_datetime(end_date)
-        # Fetch and calculate portfolio value over time within the selected date range
+        
     
 
     # Fetch historical data for the tickers
@@ -132,7 +132,7 @@ def update_portfolio_and_graph(start_date, end_date):
         historical_data[ticker] = stock_data
 
     # Apply the portfolio weights to the historical data
-    # Assuming market_cap_df has a 'Weight' column
+    
     weights = info_df.set_index('Ticker')['Weight'].reindex(historical_data.columns).fillna(0)
     asset_quantity=weights*portfolio_value/historical_data.iloc[0]
     weighted_data = historical_data.multiply(asset_quantity, axis='columns')
@@ -145,7 +145,7 @@ def update_portfolio_and_graph(start_date, end_date):
     # Calculate portfolio metrics
     metrics = calculate_portfolio_metrics(df_pv)
     
-    #return #updated_table_data,
+
     return updated_graph,metrics['Total Return'], metrics['Annualized Return'], metrics['Sharpe Ratio']
 
 

@@ -18,7 +18,6 @@ def calculate_portfolio_metrics(df_pv):
         'Total Return': round(total_return,4),
         'Annualized Return': round(annualized_return,4),
         'Sharpe Ratio': round(sharpe_ratio,4),
-        # Add more metrics as needed
     }
     
     return metrics

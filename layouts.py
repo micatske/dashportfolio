@@ -29,16 +29,9 @@ def create_navbar():
     return navbar
 
 # Home Page Layout with the Portfolio Table
-# Fetch data for default tickers
 index_page = html.Div([
  html.H1('Market Cap Based Portfolio'),
     
-    # html.Div([
-    #     dcc.Input(id='new-ticker-input', type='text', placeholder='Enter a new ticker...'),
-    #     html.Button('Add Ticker', id='add-ticker-button', n_clicks=0),
-    #     html.Button('Remove Ticker', id='remove-ticker-button', n_clicks=0),
-    # ]),
-    # html.Br(),
     DataTable(
         id='portfolio-table',
         columns=[
