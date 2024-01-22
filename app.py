@@ -57,7 +57,7 @@ def fetch_data():
     info_df = pd.DataFrame(stock_info)
     total_market_cap = info_df['Market Cap'].sum()
 
-    info_df['Weight'] = round((info_df['Market Cap'] / total_market_cap)*100,2)
+    info_df['Weight'] = (info_df['Market Cap'] / total_market_cap)
 
     # Assume a portfolio value of $10,000
     portfolio_value = 10000
@@ -107,11 +107,11 @@ def update_portfolio_and_graph(start_date, end_date):
     info_df = pd.DataFrame(stock_info)
     total_market_cap = info_df['Market Cap'].sum()
 
-    info_df['Weight'] = round((info_df['Market Cap'] / total_market_cap)*100,2)
+    info_df['Weight'] = info_df['Market Cap'] / total_market_cap
 
     # Assume a portfolio value of $10,000
     portfolio_value = 10000
-    info_df['Investment'] = round(info_df['Weight'] * portfolio_value,2)
+    info_df['Investment'] = info_df['Weight'] * portfolio_value
     # Update portfolio table data
     updated_table_data = info_df.to_dict('records')
 
@@ -134,7 +134,7 @@ def update_portfolio_and_graph(start_date, end_date):
     # Apply the portfolio weights to the historical data
     # Assuming market_cap_df has a 'Weight' column
     weights = info_df.set_index('Ticker')['Weight'].reindex(historical_data.columns).fillna(0)
-    asset_quantity=round(weights*portfolio_value/100/historical_data.iloc[0]) 
+    asset_quantity=weights*portfolio_value/historical_data.iloc[0]
     weighted_data = historical_data.multiply(asset_quantity, axis='columns')
     df_pv = weighted_data.sum(axis=1)
 

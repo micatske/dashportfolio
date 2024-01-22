@@ -41,9 +41,21 @@ index_page = html.Div([
     # html.Br(),
     DataTable(
         id='portfolio-table',
-        columns=[{"name": i, "id": i} for i in info_df.columns],
-        data=info_df.to_dict('records')
-    ), 
+        columns=[
+        {'name': 'Company Name', 'id': 'Company Name', 'type': 'text'},
+        {'name': 'Ticker', 'id': 'Ticker', 'type': 'text'},
+        {'name': 'Market Cap', 'id': 'Market Cap', 'type': 'numeric',
+         'format': {'specifier': '$,.2f'}},  # Use 'en-US' directly for locale
+        {'name': 'Weight', 'id': 'Weight', 'type': 'numeric',
+         'format': {'specifier': '.2%',}},
+        {'name':'Investment','id':'Investment','type':'numeric','format': {'specifier': '$,.2f'}}# Use 'en-US' directly for locale
+    ],
+            data=info_df.to_dict('records'),
+            style_table={'overflowX': 'auto'},
+            page_size=10,
+            sort_action="native",
+            filter_action="native"
+        ),
     html.Br(),
     dcc.Link('Go to Portfolio Page', href='/portfolio-page'),   
     html.Br(),
