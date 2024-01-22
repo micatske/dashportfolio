@@ -5,12 +5,6 @@ Dashboard with stock price analysis.
 
 This is an interactive dashboard  where users can pick the date range.
 
-### To Do
-- use different visualization libary (Plotly, Bokhe)
-- add notations when basic trading strategies are present
-  - death cross, golden corss etc.
-- add recent news from the company to the dashboard
-
 ### Files 
 - app.py: file to run the dashboard in the webbrowser
 - layouts.py: file contains page layout
